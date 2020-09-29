@@ -10,19 +10,28 @@ class TransactionForm extends StatefulWidget {
 }
 
 class _TransactionFormState extends State<TransactionForm> {
-  final titleController = TextEditingController();
+  final _titleController = TextEditingController();
 
-  final valueController = TextEditingController();
+  final _valueController = TextEditingController();
 
   _submitForm() {
-    final title = titleController.text;
-    final value = double.tryParse(valueController.text) ?? 0.0;
+    final title = _titleController.text;
+    final value = double.tryParse(_valueController.text) ?? 0.0;
 
     if (title.isEmpty || value <= 0) {
       return;
     }
 
     widget.onSubmit(title, value);
+  }
+
+  _showDatePicker(BuildContext context) {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    );
   }
 
   @override
@@ -34,26 +43,45 @@ class _TransactionFormState extends State<TransactionForm> {
         child: Column(
           children: [
             TextField(
-              controller: titleController,
+              controller: _titleController,
               onSubmitted: (_) => _submitForm(),
               decoration: InputDecoration(
                 labelText: 'Titulo: ',
               ),
             ),
             TextField(
-              controller: valueController,
+              controller: _valueController,
               onSubmitted: (_) => _submitForm(),
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
                 labelText: 'Valor (R\$): ',
               ),
             ),
+            Container(
+              height: 70,
+              child: Row(
+                children: [
+                  Text('Nenhuma data selecionada'),
+                  FlatButton(
+                    onPressed: _showDatePicker(context),
+                    textColor: Theme.of(context).primaryColor,
+                    child: Text(
+                      'Selecionar Data',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                FlatButton(
+                RaisedButton(
                   onPressed: _submitForm,
-                  textColor: Colors.purple,
+                  color: Theme.of(context).primaryColor,
+                  textColor: Theme.of(context).textTheme.button.color,
                   child: Text('Nova Transação'),
                 ),
               ],
